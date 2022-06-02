@@ -43,7 +43,9 @@ class MySQL():
 
                 Mail VARCHAR(40) NOT NULL,
 
-                date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+                enter TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+
+                exit TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
                 
                 )""")
 
@@ -76,65 +78,51 @@ class MySQL():
 
         return column, row
 
-# 修繕の必要あり
-    def getProperty(self):
+    def getDBImage(self):
 
-        self.id = []
+        # 取得するのは画像のみ
+
         self.images = []
-        self.person_ids = []
-        self.mails = []
 
         if not self.table:
             logging.error(f"{self.table} table does not exist")
         else:            
-            self.cursor.execute(f"SELECT id, images, person_id, Mail FROM {self.table};")
+            self.cursor.execute(f"SELECT images FROM {self.table};")
             param_list = self.cursor.fetchall()
 
-            for x in range(len(param_list)):
-                self.id.append(param_list[x][0])
-                self.images.append(param_list[x][1])
-                self.person_ids.append(param_list[x][2])
-                self.mails.append(param_list[x][3])
-           
-            self.student_dic = dict(zip(self.id, self.person_ids))
-            self.mail_dic = dict(zip(self.id, self.mails))
-            
-
-            # debug
-            logging.info(self.mail_dic)
-
-        return self.student_dic, self.images
+            for x in param_list:
+                self.images.append(param_list[x])
         
+        return self.images
+
     def upDate(self, person_id):
-        flag = 0
 
-
-        # 今日の日付を求める
+        # 今の時間を調べる
         JST = timezone(timedelta(hours=+9), 'JST')
-        today = datetime.now(JST)
-        today = f"{today:%m/%d}"
-
-        # 指定したテーブルに新しいカラム（今日の日付）を追加する
-        # テーブルの中に重複している値がなければ新規追加する
-        try:
-            self.cursor.execute(f"ALTER TABLE {self.table} ADD `{today}` int NOT NULL;")   
-        # 重複していたら追加しない
-        except:
-            pass
+        now = datetime.now(JST)
+        now = f"{now:%h:%m:%s}"
 
         for id in person_id:
-            for ids in self.person_ids:
-                if id == ids:
-                    flag = 1
-                    self.cursor.execute(f"UPDATE {self.table} SET `{today}`={flag} WHERE person_id='{id}'")
-                    # debug
-                    logging.info("Query OK")
-                    self.cnx.commit()
-                    self.cnx.close()
-                    flag = 0
-                else:
-                    continue
-    
+            # idを参照して一致した人の名前を返す
+            self.cursor.execute(f"SELECT name FROM {self.table} WHERE person_id='{id}'")
+            name = self.cursor.fetchall() # list?
+
+            # 認識した人が入場するとき
+            
+            self.cursor.execute(f"UPDATE {self.table} SET `enter`=`{now}`WHERE person_id='{id}'")
+            logging.info(f"ようこそ`{name}様(・ω・)ノ")
+            
+            # 認識した人が退出するとき
+            self.cursor.execute(f"UPDATE {self.table} SET `exit`=`{now}`WHERE person_id='{id}'")
+            logging.info("またのお越しをお待ちしています(*´▽｀*)")
+
+        # debug
+        self.cnx.commit()
+        self.cnx.close()
+
+        return name
+
+# 入退場に関してはいらないかも？
     def sendMail(self):
         # properties
         fromAddress = os.environ["MAIL"]
