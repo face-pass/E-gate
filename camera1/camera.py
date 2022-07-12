@@ -2,11 +2,7 @@ from netrc import netrc
 import cv2
 import datetime
 import requests
-# import requests
-# import time
-# import json
-# import base64
-# import tkinter as tk
+
 
 from func.function import *
 
@@ -34,7 +30,7 @@ while True:
     # time.sleep(3)
 
     # 撮った画像をここで送信する
-    response = requests.post('https://egate.azurewebsites.net/', json_image)
+    response = requests.post('', json_image)
 
     if response.status_code == 200:
       show_window()

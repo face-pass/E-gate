@@ -13,7 +13,7 @@ def image_to_json(img):
   print(type(img_byte))
 
 #  ーー json形式にする ーー
-  img_json = json.dumps({'image': img_byte})
+  img_json = json.dumps({'table': 'test','image': img_byte})
   print(type(img_json))
 
   return img_json
@@ -25,6 +25,6 @@ def show_window():
     # 終了する
     root.after(1000, lambda: root.destroy()) 
     # 表示するもの
-    label = tk.Label(root, text="ようこそ　〇〇", font=("",20), bg="#aafaff")  
+    label = tk.Label(root, text="ようこそ　〇〇さん", font=("",20), bg="#aafaff")  
     label.pack()
     root.mainloop()
