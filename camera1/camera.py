@@ -13,9 +13,34 @@ def save_json(filename, json_image):
       json.dump(json_image, fp)
 face_cascade = cv2.CascadeClassifier('./haarcascade_frontalface_default.xml')
 cap = cv2.VideoCapture(0)
+# WIDTH = 200
+# HEIGHT = 200
+# FPS = 24
+
+# def decode_fourcc(v):
+#         v = int(v)
+#         return "".join([chr((v >> 8 * i) & 0xFF) for i in range(4)])
+
+
+
+
+# # フォーマット・解像度・FPSの設定
+# #cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M','J','P','G'))
+# cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('Y','U','Y','V'))
+# cap.set(cv2.CAP_PROP_FRAME_WIDTH, WIDTH)
+# cap.set(cv2.CAP_PROP_FRAME_HEIGHT, HEIGHT)
+# cap.set(cv2.CAP_PROP_FPS, FPS)
+
+# # フォーマット・解像度・FPSの取得
+# fourcc = decode_fourcc(cap.get(cv2.CAP_PROP_FOURCC))
+# width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
+# height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
+# fps = cap.get(cv2.CAP_PROP_FPS)
+# print("fourcc:{} fps:{}　width:{}　height:{}".format(fourcc, fps, width, height))
 while True:
   fileName = "photo_" + datetime.datetime.today().strftime('%Y%m%d_%H%M%S') + ".png"
-  ret, img = cap.read()
+  ret, img1 = cap.read()
+  img = cv2.resize(img1, (256,256), cv2.INTER_AREA)
   gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
   faces = face_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5)
 
