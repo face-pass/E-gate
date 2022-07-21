@@ -1,12 +1,8 @@
 import logging
 from datetime import datetime,timedelta, timezone
-from sqlite3 import Cursor
 import pymysql
-import os
 from shared_code.config import config
-import smtplib
-from email.mime.text import MIMEText
-from email.utils import formatdate
+
 
 class MySQL():
     def __init__(self, table):
@@ -31,13 +27,13 @@ class MySQL():
         self.images = []
 
         if not self.table:
-            logging.error(f"{self.table} table does not exist")
+            logging.error(f"table name is empty set!")
         else:            
             self.cursor.execute(f"SELECT images FROM {self.table};")
             param_list = self.cursor.fetchall()
 
-            for x in param_list:
-                self.images.append(param_list[x])
+            for x in range(len(param_list)):
+                self.images.append(param_list[0][x])                                                                           
         
         return self.images
 
@@ -46,26 +42,31 @@ class MySQL():
         # 今の時間を調べる
         JST = timezone(timedelta(hours=+9), 'JST')
         now = datetime.now(JST)
-        now = f"{now:%h:%m:%s}"
+        now = now.strftime('%X')
 
-        for id in person_id:
-            # idを参照して一致した人の名前を返す
-            self.cursor.execute(f"SELECT name, flag FROM {self.table} WHERE person_id='{id}'")
-            name = self.cursor.fetchone()
-            flag = self.cursor.fetchone()
+        # idを参照して一致した人の名前を返す
+        self.cursor.execute(f"SELECT name, flag FROM {self.table} WHERE id='{person_id}'")
+        fetch_one = self.cursor.fetchone()
+        name, flag = fetch_one[0], fetch_one[1]
 
-            if flag == 0:
-                self.cursor.execute(f"UPDATE {self.table} SET `enter`=`{now}`, 'flag' = '1' WHERE person_id='{id}'")
-                logging.info(f"{name}")
+        logging.info(flag)
 
-                return name
 
-            elif flag == 1:
-                self.cursor.execute(f"UPDATE {self.table} SET `exit`=`{now}`, 'flag' = '0' WHERE person_id='{id}'")
-                logging.info("退場")
+        if  flag == 0:
+            self.cursor.execute(f"UPDATE {self.table} SET `enter`='{now}', `flag`=1 WHERE id={person_id}")
+            logging.info(name)
 
-                return name
+            self.cnx.commit()
+            self.cnx.close()
 
-        # debug
-        self.cnx.commit()
-        self.cnx.close()
+            return name
+
+        elif flag == 1:
+            self.cursor.execute(f"UPDATE {self.table} SET `gateway`='{now}', `flag`=0 WHERE id={person_id}")
+            logging.info("退場")
+
+            self.cnx.commit()
+            self.cnx.close()
+
+            return name
+

@@ -1,7 +1,6 @@
 import numpy as np
 import base64
 import cv2
-import io
 
 def img_decoder(b64_data):
     #バイナリデータ <- base64でエンコードされたデータ  
