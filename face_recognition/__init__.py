@@ -1,18 +1,14 @@
-from base64 import b64decode
 import logging
-import cv2
-import pymysql
-import io
-import json
 import azure.functions as func
 import os
+from PIL import Image
 from msrest.authentication import CognitiveServicesCredentials
 from azure.cognitiveservices.vision.face import FaceClient
 from shared_code.image_decoder import img_decoder
 from shared_code.DB import MySQL
 
-ENDPOINT = os.environ['ENDPOINT']
-KEY = os.environ['KEY']
+ENDPOINT = ""
+KEY = ""
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
 
@@ -22,39 +18,61 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
     # json形式で送られてきたデータを受け取る
     try:
-        table = req.get_json('table')
-        b64_data = req.get_json('b64')
-    except:
-        return func.HttpResponse('table or b64_data does not exist')
+        json_data = req.get_json()
+        table = json_data['table']
+        b64_data = json_data['image']
 
+        # logging.info(json_data)
+        # logging.info(table)
+        # logging.info(b64_data)
+    except:
+        func.HttpResponse("Error!! Please check json_data, table, b64_data.", status_code=400)
     # 送られてきたデータ(バイナリデータ)を画像データに変換する
     send_img = img_decoder(b64_data)
+    pil_img = Image.fromarray(send_img)
+    pil_img.save('./request_img.png')
 
     # データベースに接続して画像データをリストとして持ってくる
     db = MySQL(table)
     db_img = db.getDBImage()
 
-    detect_req_face = faceclient.face.detect_with_stream(send_img, 'detection_03')
-    face_req_id = detect_req_face.face_id
+    logging.info(db_img)
+
+    img = open('./request_img.png', 'rb')
+
+    # detect_req_face = faceclient.face.detect_with_stream(send_img, 'detection_03')
+    detect_req_face = faceclient.face.detect_with_stream(img, 'detection_03')
+    face_req_id = detect_req_face[0].face_id
+
+    logging.info(face_req_id)
 
     # それぞれの画像を比較して類似度を分析する
     # 一番類似度が高かった番号を返す
     person_id = 1
     for x in db_img:
         detect_face = faceclient.face.detect_with_url(x, "detection_03")
-        face_id = detect_face.face_id
+        face_id = list(map(lambda x: x.face_id, detect_face))
 
-        similar_faces = faceclient.face.find_similar(face_id=face_id, face_ids=face_req_id)
+        logging.info(face_id)
+
+        similar_faces = faceclient.face.find_similar(face_id=face_req_id, face_ids=face_id)
         if similar_faces:
-            verify_result = faceclient.face.verify_face_to_face(face_id1=face_id, face_id2=face_req_id)
-            logging.info("find similar_faces {} = {}. confidence: {}%".format(x, send_img, int(verify_result.confidence * 100)))
+            verify_result = faceclient.face.verify_face_to_face(face_id1=face_req_id, face_id2=face_id[person_id - 1])
+            logging.info("find similar_faces {} = {}. confidence: {}%".format('request_img.png', x, int(verify_result.confidence * 100)))
             break
-        else:
+        elif person_id < len(db_img):
             person_id += 1
             continue
-    
+        else:
+            return func.HttpResponse(status_code=201)
+
+    img.close()    
+    os.remove('./request_img.png')
+
     # 番号を引数にしてデータベースを参照、人物の特定を行う
     name = db.upDate(person_id)
+
+    logging.info(name)
 
     # 名前のデータを返す
     return func.HttpResponse(name, status_code=200)
