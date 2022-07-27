@@ -11,7 +11,7 @@ def save_json(filename, json_image):
     with open(filename, 'w', encoding='utf-8') as fp:
       json.dump(json_image, fp)
 face_cascade = cv2.CascadeClassifier('./haarcascade_frontalface_default.xml')
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(1)
 
 while True:
   fileName = "photo_" + datetime.datetime.today().strftime('%Y%m%d_%H%M%S') + ".png"
@@ -31,7 +31,7 @@ while True:
     # time.sleep(3)
 
     # 撮った画像をここで送信する
-    response = requests.post('request url', json=json_data)
+    response = requests.post('requestURL', json=json_data)
 
     print(response.text)
 
@@ -39,8 +39,10 @@ while True:
       show_window(response.text)
     elif response.status_code == 201:
       print("Oops. You are not registered in list")
+    elif response.status_code == 501:
+      print(response.text)
     else:
-      print("Error!! Check requests url or request data")
+      print("Error!! Check the log from azure function")
 
   cv2.imshow('video image', img)
 

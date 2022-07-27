@@ -33,7 +33,7 @@ class MySQL():
             param_list = self.cursor.fetchall()
 
             for x in range(len(param_list)):
-                self.images.append(param_list[0][x])                                                                           
+                self.images.append(param_list[x][0])                                                                           
         
         return self.images
 

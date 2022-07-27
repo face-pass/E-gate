@@ -21,8 +21,8 @@ def show_window(name):
     # サイズ
     root.geometry('500x300')
     # 終了する
-    root.after(4000, lambda: root.destroy()) 
+    root.after(10000, lambda: root.destroy()) 
     # 表示するもの
-    label = tk.Label(root, text=f"ようこそ　{name}さん", font=("",20), bg="#aafaff")  
+    label = tk.Label(root, text=f"ようこそ　{name}さん(*´▽｀*)", font=("",20), bg="#aafaff")  
     label.pack()
     root.mainloop()
