@@ -8,3 +8,4 @@ pymysql
 azure-cognitiveservices-vision-face
 numpy
 azure-storage-blob==12.0.0
+pillow
