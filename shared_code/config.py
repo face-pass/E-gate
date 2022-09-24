@@ -1,6 +1,6 @@
 import os
 
-config = {
+db_config = {
 'host': os.environ['HOST'],
 'port': int(os.environ['PORT']),
 'user': os.environ['USER'],
@@ -10,3 +10,5 @@ config = {
             {'ca': os.environ['SSL']}
         }
 }
+
+blob_config = os.environ['Connect_str']
