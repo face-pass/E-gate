@@ -42,5 +42,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         # delete user name
         database.deleteUser(request_ids)
 
+        return func.HttpResponse("Request Successed!!", status_code=200)
+
     except:
         return func.HttpResponse("Internal Server Error", status_code=500)

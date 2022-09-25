@@ -1,7 +1,7 @@
 import logging
 from datetime import datetime,timedelta, timezone
 import pymysql
-from shared_code.config import config
+from shared_code.config import db_config
 
 
 class MySQL():
@@ -11,7 +11,7 @@ class MySQL():
 
         try:
             logging.info("---------------------------")
-            self.cnx = pymysql.connect(**config)
+            self.cnx = pymysql.connect(**db_config)
             logging.info(self.cnx)
             logging.info("Connection established")
         except pymysql.Error as err:
