@@ -63,6 +63,7 @@ class MySQL():
         
     def DeleteUser(self, ids):
         
+        # idを取得
         for x in ids:
             self.cursor.execute(f"DELETE FROM {self.table} WHERE id = {x}")
         
