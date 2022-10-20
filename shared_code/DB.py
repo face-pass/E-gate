@@ -38,36 +38,37 @@ class MySQL():
 
         return self.images
 
-    def Register(self):
-
-        # 名前を取得
-        self.name = []
-
-        self.cursor.execute(f"SELECT name FROM {self.table};")
-        param_list = self.cursor.fetchall()
+    def Register(self, name):
 
         for x in range(len(param_list)):
             self.name.append(param_list[x][0])
 
-        self.cursor.execute(f"INSERT {self.table} (name, enter, exit, flag) VALUES ('test', '1', '2', '0')")
+        self.cursor.execute(f"INSERT {self.table} ({name}, enter, exit, flag) VALUES {self.table}('test', '1', '2', '0')")
         logging.info("registered")
+
+        self.cnx.commit()
+        self.cnx.close()
 
         # 確認
         try:
-            self.name = []
-            logging.info(self.name)
             logging.info("success")
         except:
             logging.info("error")
 
         
     def DeleteUser(self, ids):
-        
+
+        self.cursor.execute(f"SELECT id FROM {self.table};")
+        param_list = self.cursor.fetchall()
+
         # idを取得
         for x in ids:
             self.cursor.execute(f"DELETE FROM {self.table} WHERE id = {x}")
         
-        return func.HttpRespons("deleted user", status_code = 200)
+        self.cnx.commit()
+        self.cnx.close()
+        
+        return func.HttpResponse("deleted user", status_code = 200)
 
     def upDate(self, person_id):
 
