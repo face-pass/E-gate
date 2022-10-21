@@ -1,6 +1,7 @@
 import logging
 from datetime import datetime,timedelta, timezone
 import pymysql
+import azure.functions as func
 from shared_code.config import config
 
 
@@ -23,7 +24,7 @@ class MySQL():
 
     def getDBImage(self):
 
-        # 取得するのは画像のみ
+        # 画像を取得
         self.images = []
 
         if not self.table:
@@ -33,13 +34,45 @@ class MySQL():
             param_list = self.cursor.fetchall()
 
             for x in range(len(param_list)):
-                self.images.append(param_list[x][0])                                                                           
-        
+                self.images.append(param_list[x][0])
+
         return self.images
+
+    def Register(self, name):
+
+        for x in range(len(param_list)):
+            self.name.append(param_list[x][0])
+
+        self.cursor.execute(f"INSERT {self.table} ({name}, enter, exit, flag) VALUES {self.table}('test', '1', '2', '0')")
+        logging.info("registered")
+
+        self.cnx.commit()
+        self.cnx.close()
+
+        # 確認
+        try:
+            logging.info("success")
+        except:
+            logging.info("error")
+
+        
+    def DeleteUser(self, ids):
+
+        self.cursor.execute(f"SELECT id FROM {self.table};")
+        param_list = self.cursor.fetchall()
+
+        # idを取得
+        for x in ids:
+            self.cursor.execute(f"DELETE FROM {self.table} WHERE id = {x}")
+        
+        self.cnx.commit()
+        self.cnx.close()
+        
+        return func.HttpResponse("deleted user", status_code = 200)
 
     def upDate(self, person_id):
 
-        # 今の時間を調べる
+        # 現在の時刻を調べる
         JST = timezone(timedelta(hours=+9), 'JST')
         now = datetime.now(JST)
         now = now.strftime('%X')
