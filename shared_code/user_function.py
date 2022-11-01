@@ -1,28 +1,23 @@
 import pandas as pd
 import logging
+import azure.functions as func
+from io import StringIO
 
-def get_user_csv(data):
+def get_user(data):
 
-    # read csv file
-    df = pd.read_csv(data)
+    # df = pd.read_csv(data["data_file"])
+    # logging.info(df)
 
-    # debug
-    logging.info(df)
 
-    # get `name` column
-    name = df.loc["dummy"]
+    try:
+        # read csv file
+        df = pd.read_csv(data["data_file"])
 
-    return name
+        logging.info(df)
 
-def get_user_xlsx(data):
+        names = df["name"].values.tolist()
 
-    # read xlsx file
-    df = pd.read_excel(data)
-
-    # debug
-    logging.info()
-
-    # find column `name`
-    name = df.loc["dummy"]
-
-    return name
+        return names
+    except FileNotFoundError as e:
+        
+        logging.error(e)

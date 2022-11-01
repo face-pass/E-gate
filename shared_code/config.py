@@ -1,5 +1,6 @@
 import os
 
+# Database
 db_config = {
 'host': os.environ['HOST'],
 'port': int(os.environ['PORT']),
@@ -11,4 +12,9 @@ db_config = {
         }
 }
 
+# Face API
+ENDPOINT = os.environ['ENDPOINT']
+KEY = os.environ['KEY']
+
+# Azure Blob
 blob_config = os.environ['Connect_str']

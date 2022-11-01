@@ -6,9 +6,8 @@ from msrest.authentication import CognitiveServicesCredentials
 from azure.cognitiveservices.vision.face import FaceClient
 from shared_code.image_decoder import img_decoder
 from shared_code.DB import MySQL
-
-ENDPOINT = ""
-KEY = ""
+# from shared_code.config import KEY, ENDPOINT
+from shared_code.hide_config import KEY, ENDPOINT
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
 

@@ -1,8 +1,8 @@
 import logging
 from datetime import datetime,timedelta, timezone
 import pymysql
-from shared_code.config import db_config
-
+# from shared_code.config import db_config
+from shared_code.hide_config import db_config
 
 class MySQL():
     def __init__(self, table):
