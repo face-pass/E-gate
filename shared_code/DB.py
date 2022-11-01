@@ -4,7 +4,6 @@ import pymysql
 import azure.functions as func
 from shared_code.config import config
 
-
 class MySQL():
     def __init__(self, table):
 
@@ -12,7 +11,7 @@ class MySQL():
 
         try:
             logging.info("---------------------------")
-            self.cnx = pymysql.connect(**config)
+            self.cnx = pymysql.connect(**db_config)
             logging.info(self.cnx)
             logging.info("Connection established")
         except pymysql.Error as err:

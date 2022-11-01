@@ -2,7 +2,6 @@ import cv2
 import datetime
 import requests
 
-
 from func.function import *
 
 #ーーーー顔認識ーーーーー
