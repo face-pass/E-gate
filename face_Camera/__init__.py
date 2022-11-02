@@ -5,7 +5,6 @@ import requests
 import logging
 import azure.functions as func
 import os
-from PIL import Image
 from msrest.authentication import CognitiveServicesCredentials
 from azure.cognitiveservices.vision.face import FaceClient
 
@@ -14,7 +13,8 @@ ENDPOINT = ""
 KEY = ""
 face_cascade = cv2.CascadeClassifier('./haarcascade_frontalface_default.xml')
 cap = cv2.VideoCapture(1)
-
+db = MySQL("テーブル名")
+db_img = db.getDBImage()
 from func.function import *
 def main(req: func.HttpRequest) -> func.HttpResponse:
     faceclient = FaceClient(ENDPOINT, CognitiveServicesCredentials(KEY))
@@ -36,8 +36,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         
        
       
-        db = MySQL("テーブル名")
-        db_img = db.getDBImage()
+
 
         logging.info(db_img)
         # 撮った画像をここで送信する
