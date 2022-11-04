@@ -2,7 +2,7 @@ import logging
 from datetime import datetime,timedelta, timezone
 import pymysql
 import azure.functions as func
-from shared_code.config import config
+from shared_code.config import db_config
 
 class MySQL():
     def __init__(self, table):
@@ -30,17 +30,17 @@ class MySQL():
             logging.error(f"table name is empty set!")
         else:            
             self.cursor.execute(f"SELECT images FROM {self.table};")
-            param_list = self.cursor.fetchall()
+            self.param_list = self.cursor.fetchall()
 
-            for x in range(len(param_list)):
-                self.images.append(param_list[x][0])
+            for x in range(len(self.param_list)):
+                self.images.append(self.param_list[x][0])
 
         return self.images
 
     def Register(self, name):
 
-        for x in range(len(param_list)):
-            self.name.append(param_list[x][0])
+        for x in range(len(self.param_list)):
+            self.name.append(self.param_list[x][0])
 
         self.cursor.execute(f"INSERT {self.table} ({name}, enter, exit, flag) VALUES {self.table}('test', '1', '2', '0')")
         logging.info("registered")
@@ -58,7 +58,7 @@ class MySQL():
     def DeleteUser(self, ids):
 
         self.cursor.execute(f"SELECT id FROM {self.table};")
-        param_list = self.cursor.fetchall()
+        self.param_list = self.cursor.fetchall()
 
         # idを取得
         for x in ids:
