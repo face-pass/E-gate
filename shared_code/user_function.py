@@ -5,13 +5,9 @@ from io import StringIO
 
 def get_user(data):
 
-    # df = pd.read_csv(data["data_file"])
-    # logging.info(df)
-
-
     try:
         # read csv file
-        df = pd.read_csv(data["data_file"])
+        df = pd.read_csv(data)
 
         logging.info(df)
 

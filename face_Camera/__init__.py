@@ -7,16 +7,15 @@ import azure.functions as func
 import os
 from msrest.authentication import CognitiveServicesCredentials
 from azure.cognitiveservices.vision.face import FaceClient
-
 from shared_code.DB import MySQL
-ENDPOINT = ""
-KEY = ""
-face_cascade = cv2.CascadeClassifier('./haarcascade_frontalface_default.xml')
-cap = cv2.VideoCapture(1)
-db = MySQL("テーブル名")
-db_img = db.getDBImage()
-from func.function import *
+from shared_code.hide_config import KEY, ENDPOINT
+
 def main(req: func.HttpRequest) -> func.HttpResponse:
+    face_cascade = cv2.CascadeClassifier('./haarcascade_frontalface_default.xml')
+    cap = cv2.VideoCapture(1)
+    db = MySQL("テーブル名")
+    db_img = db.getDBImage()
+
     faceclient = FaceClient(ENDPOINT, CognitiveServicesCredentials(KEY))
   
     while True:
@@ -34,10 +33,6 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         picture = cv2.putText(img, 'face detect', (20,50), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0,0,200), 2, cv2.LINE_AA, cv2.imwrite(fileName, img[y:y+h,x:x+w]))
         # time.sleep(3)
         
-       
-      
-
-
         logging.info(db_img)
         # 撮った画像をここで送信する
         try:
@@ -93,5 +88,5 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
       key = cv2.waitKey(10)
       if key == 27:
         break
-cap.release()
-cv2.destroyAllWindows()
+    cap.release()
+    cv2.destroyAllWindows()

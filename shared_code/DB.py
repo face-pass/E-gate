@@ -2,7 +2,8 @@ import logging
 from datetime import datetime,timedelta, timezone
 import pymysql
 import azure.functions as func
-from shared_code.config import db_config
+# from shared_code.config import db_config
+from shared_code.hide_config import db_config
 
 class MySQL():
     def __init__(self, table):
@@ -16,7 +17,6 @@ class MySQL():
             logging.info("Connection established")
         except pymysql.Error as err:
             logging.error(err)
-
         else:
             self.cursor = self.cnx.cursor()
             logging.info('success')
@@ -37,24 +37,22 @@ class MySQL():
 
         return self.images
 
-    def Register(self, name):
+    def Register(self, name, image):
 
-        for x in range(len(self.param_list)):
-            self.name.append(self.param_list[x][0])
+        # for x in range(len(self.param_list)):
+        #     self.name.append(self.param_list[x][0])
 
-        self.cursor.execute(f"INSERT {self.table} ({name}, enter, exit, flag) VALUES {self.table}('test', '1', '2', '0')")
-        logging.info("registered")
+        logging.info(name)
+
+        try:
+            self.cursor.execute(f"INSERT INTO {self.table} (images, name, enter, gateway, flag) VALUES ('{image}', '{name}', 'test', '1', '0')")
+            logging.info("registered")
+        except:
+            pass
 
         self.cnx.commit()
         self.cnx.close()
 
-        # 確認
-        try:
-            logging.info("success")
-        except:
-            logging.info("error")
-
-        
     def DeleteUser(self, ids):
 
         self.cursor.execute(f"SELECT id FROM {self.table};")

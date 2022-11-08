@@ -1,6 +1,7 @@
 import logging
 import azure.functions as func
-from config import KEY, ENDPOINT
+# from config import KEY, ENDPOINT
+from hide_config import KEY, ENDPOINT
 from azure.cognitiveservices.vision.face import FaceClient
 from msrest.authentication import CognitiveServicesCredentials
 class FaceAPI():

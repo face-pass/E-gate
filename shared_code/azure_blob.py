@@ -7,26 +7,29 @@ from shared_code.hide_config import blob_config
 
 class Blob():
 
-    def __init__(self, container):
+    def __init__(self):
         self.service_client = BlobServiceClient.from_connection_string(blob_config)
-        self.container_client = self.service_client.get_container_client(container)
 
-    def save_image_to_blob(self, images):
-        image_content_setting = ContentSettings(content_type='image/jpeg')
+    def save_image_to_blob(self, images, container):
 
-        for image in images:
-            with open(image, "rb") as data:
-                self.blob_client.upload_blob(data, overwrite=True, content_settings=image_content_setting)
+        logging.info(container)
+        blob_client = self.service_client.get_blob_client(container=container, blob=images.filename)
+        logging.info("uploading image...")
+        
+        blob_client.upload_blob(images, overwrite=True)
 
-    def get_image_url(self):
-       blob_list = self.container_client.list_blobs()
+    def get_image_url(self, container):
+        image_url = []
+        container_client = self.service_client.get_container_client(container=container)
+        blob_list = container_client.list_blobs()
 
-       # debug
-       logging.info(blob_list)
+        # debug
+        logging.info(blob_list)
+        for blob in blob_list:
+                blob_name = blob.name
+                image_url.append(f"https://egate12.blob.core.windows.net/db-image/{blob_name}")
 
-       return blob_list
+        return image_url
 
     def delete_image(self, url):
-        self.container_client.delete_blobs(url)
-
-        
+        dummy = url
