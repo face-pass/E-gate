@@ -31,5 +31,13 @@ class Blob():
 
         return image_url
 
-    def delete_image(self, url):
-        dummy = url
+    def delete_image(self, container, file_names, delete_ids):
+
+        logging.info(file_names)
+
+        # blob_client = self.service_client.get_blob_client(container=container)
+        container_client = self.service_client.get_container_client(container=container)
+
+        for delete_id in delete_ids:
+            container_client.delete_blobfile_names[delete_ids-1]
+            
