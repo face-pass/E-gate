@@ -26,8 +26,8 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         blob = Blob()
         database = MySQL(table)
 
-        # get image url
-        image_urls = database.getDBImage()
+        # get delete image url
+        image_urls = database.getDBImage(request_ids)
 
         # get image file name from image_url
         for image_url in image_urls:
@@ -35,7 +35,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             file_name.append(split_url[-1])
 
         # # delete blob from above result data
-        blob.delete_image(container, file_name)
+        blob.delete_image(container, file_name, request_ids)
 
         # # delete user name
         database.DeleteUser(request_ids)
