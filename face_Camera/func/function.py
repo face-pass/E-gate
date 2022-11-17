@@ -2,8 +2,8 @@ import cv2
 import base64
 import json
 import tkinter as tk
-import requests
 from shared_code.DB import MySQL
+
 
 
 def show_window(name):
@@ -17,17 +17,3 @@ def show_window(name):
     label.pack()
     root.mainloop()
 
-def request_1():
-    db = MySQL("テーブル名")
-    response = requests.post('requestURL', json=db)
-
-    print(response.text)
-
-    if response.status_code == 200:
-      show_window(response.text)
-    elif response.status_code == 201:
-      print("Oops. You are not registered in list")
-    elif response.status_code == 501:
-      print(response.text)
-    else:
-      print("Error!! Check the log from azure function")
