@@ -2,6 +2,7 @@ import cv2
 import base64
 import json
 import tkinter as tk
+from shared_code.DB import MySQL
 
 
 
@@ -15,3 +16,4 @@ def show_window(name):
     label = tk.Label(root, text=f"ようこそ　{name}さん(*´▽｀*)", font=("",20), bg="#aafaff")  
     label.pack()
     root.mainloop()
+

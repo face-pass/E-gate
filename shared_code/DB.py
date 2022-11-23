@@ -11,15 +11,13 @@ class MySQL():
         self.table = table
 
         try:
-            logging.info("---------------------------")
+            print("---------------------------")
             self.cnx = pymysql.connect(**db_config)
-            logging.info(self.cnx)
-            logging.info("Connection established")
+            self.cursor = self.cnx.cursor()
+            print(self.cnx)
+            print("Connection established")
         except pymysql.Error as err:
             logging.error(err)
-        else:
-            self.cursor = self.cnx.cursor()
-            logging.info('success')
 
     def getDBImage(self):
 
@@ -42,13 +40,11 @@ class MySQL():
         # for x in range(len(self.param_list)):
         #     self.name.append(self.param_list[x][0])
 
-        logging.info(name)
+        print(name)
 
-        try:
-            self.cursor.execute(f"INSERT INTO {self.table} (images, name, enter, gateway, flag) VALUES ('{image}', '{name}', 'test', '1', '0')")
-            logging.info("registered")
-        except:
-            pass
+
+        self.cursor.execute(f"INSERT INTO {self.table} (images, name, enter, gateway, flag) VALUES ('{image}', '{name}', 'test', '1', '0')")
+        print("registered")
 
         self.cnx.commit()
         self.cnx.close()
@@ -79,12 +75,12 @@ class MySQL():
         fetch_one = self.cursor.fetchone()
         name, flag = fetch_one[0], fetch_one[1]
 
-        logging.info(flag)
+        print(flag)
 
 
         if  flag == 0:
             self.cursor.execute(f"UPDATE {self.table} SET `enter`='{now}', `flag`=1 WHERE id={person_id}")
-            logging.info(name)
+            print(name)
 
             self.cnx.commit()
             self.cnx.close()
@@ -93,7 +89,7 @@ class MySQL():
 
         elif flag == 1:
             self.cursor.execute(f"UPDATE {self.table} SET `gateway`='{now}', `flag`=0 WHERE id={person_id}")
-            logging.info("退場")
+            print("退場")
 
             self.cnx.commit()
             self.cnx.close()
