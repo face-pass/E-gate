@@ -15,10 +15,6 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         csv_data = req.files.get('data_file')
         forms = req.form
 
-        # debug
-        # logging.info(file['image_file'].filename)
-        # logging.info(all([file, forms]))
-
         # check empty request
         if not all([image, csv_data, forms]):
             logging.error("Error!! Please check request data")

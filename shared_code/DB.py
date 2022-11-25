@@ -73,6 +73,9 @@ class MySQL():
         # idを参照して一致した人の名前を返す
         self.cursor.execute(f"SELECT name, flag FROM {self.table} WHERE id='{person_id}'")
         fetch_one = self.cursor.fetchone()
+
+        print(fetch_one)
+
         name, flag = fetch_one[0], fetch_one[1]
 
         print(flag)

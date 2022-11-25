@@ -5,6 +5,7 @@ from io import BytesIO
 from datetime import datetime
 from shared_code.azure_faceAPI import FaceAPI
 from shared_code.DB import MySQL
+from shared_code.ui import show_window
 
 
 class FaceThread(threading.Thread):
@@ -26,7 +27,7 @@ class FaceThread(threading.Thread):
         if len(self._facerect) > 0:
             self._color = (255, 255, 255)
             for self._rect in self._facerect:
-                cv2.rectangle(self._frame, tuple(self._rect[0:2]), tuple(self._rect[0:2] + self._rect[2:4]), self._color, thickness=2)
+                cv2.putText(self._frame, tuple(self._rect[0:2]), tuple(self._rect[0:2] + self._rect[2:4]), self._color, thickness=2)
 
             self._now = datetime.now().strftime('%Y%m%d%H%M%S')
 
@@ -34,7 +35,8 @@ class FaceThread(threading.Thread):
             cv2.imwrite(self._image_path, self._frame)
             person_id = self._faceclient.recognition(self._image_path, self._imageURL)
             print(person_id)
-            name = self._databse(person_id)
+            name = self._databse.upDate(person_id)
+            show_window(name)
 
 # get request
 # json_data = req.get_json()

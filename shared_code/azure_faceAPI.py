@@ -3,8 +3,8 @@ import azure.functions as func
 import os
 import cv2
 # from config import KEY, ENDPOINT
-from io import BytesIO
-from PIL import Image
+# from io import BytesIO
+# from PIL import Image
 from shared_code.hide_config import KEY, ENDPOINT
 from azure.cognitiveservices.vision.face import FaceClient
 from msrest.authentication import CognitiveServicesCredentials
@@ -45,10 +45,12 @@ class FaceAPI():
             similar_faces = self.face_client.face.find_similar(face_id=face_req_id, face_ids=face_id)
             if similar_faces:
                 verify_result = self.face_client.face.verify_face_to_face(face_id1=face_req_id, face_id2=face_id[0])
-                logging.info("find similar_faces {} = {}. confidence: {}%".format('request_img.png', image, int(verify_result.confidence * 100)))
+                print("find similar_faces {} = {}. confidence: {}%".format('request_img.png', image, int(verify_result.confidence * 100)))
                 break
             elif person_id < len(db_image):
                 person_id += 1
                 continue
             else:
                 return func.HttpResponse(status_code=201)
+        
+        return person_id
