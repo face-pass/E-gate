@@ -1,2 +1,3 @@
 # E-gate
-It will make using only prototype python
+検証および、機能を新しく追加、修正するときのテスト環境用として使用する。
+
