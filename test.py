@@ -27,7 +27,7 @@ class FaceThread(threading.Thread):
         if len(self._facerect) > 0:
             self._color = (255, 255, 255)
             for self._rect in self._facerect:
-                cv2.putText(self._frame, tuple(self._rect[0:2]), tuple(self._rect[0:2] + self._rect[2:4]), self._color, thickness=2)
+                cv2.rectangle(self._frame, tuple(self._rect[0:2]), tuple(self._rect[0:2] + self._rect[2:4]), self._color, thickness=2)
 
             self._now = datetime.now().strftime('%Y%m%d%H%M%S')
 
