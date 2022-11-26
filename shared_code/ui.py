@@ -2,9 +2,6 @@ import cv2
 import base64
 import json
 import tkinter as tk
-from shared_code.DB import MySQL
-
-
 
 def show_window(name):
     root = tk.Tk()
