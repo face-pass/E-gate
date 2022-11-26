@@ -11,11 +11,11 @@ class MySQL():
         self.table = table
 
         try:
-            print("---------------------------")
+            logging.info("---------------------------")
             self.cnx = pymysql.connect(**db_config)
             self.cursor = self.cnx.cursor()
-            print(self.cnx)
-            print("Connection established")
+            logging.info(self.cnx)
+            logging.info("Connection established")
         except pymysql.Error as err:
             logging.error(err)
 
@@ -35,16 +35,14 @@ class MySQL():
 
         return self.images
 
-    def Register(self, name, image):
+    def Register(self, name, image_url):
 
-        # for x in range(len(self.param_list)):
-        #     self.name.append(self.param_list[x][0])
+        for x in range(len(name)):
 
-        print(name)
+            self.cursor.execute(f"INSERT INTO {self.table} (images, name, enter, gateway, flag) VALUES ('{image_url[x]}', '{name[x]}', 'test', '1', '0')")
+            logging.info("registered!")
 
-
-        self.cursor.execute(f"INSERT INTO {self.table} (images, name, enter, gateway, flag) VALUES ('{image}', '{name}', 'test', '1', '0')")
-        print("registered")
+            logging.info(f"result images : {image_url[x]} name : {name[x]}")
 
         self.cnx.commit()
         self.cnx.close()
@@ -74,16 +72,16 @@ class MySQL():
         self.cursor.execute(f"SELECT name, flag FROM {self.table} WHERE id='{person_id}'")
         fetch_one = self.cursor.fetchone()
 
-        print(fetch_one)
+        logging.info(fetch_one)
 
         name, flag = fetch_one[0], fetch_one[1]
 
-        print(flag)
+        logging.info(flag)
 
 
         if  flag == 0:
             self.cursor.execute(f"UPDATE {self.table} SET `enter`='{now}', `flag`=1 WHERE id={person_id}")
-            print(name)
+            logging.info(name)
 
             self.cnx.commit()
             self.cnx.close()
@@ -92,7 +90,7 @@ class MySQL():
 
         elif flag == 1:
             self.cursor.execute(f"UPDATE {self.table} SET `gateway`='{now}', `flag`=0 WHERE id={person_id}")
-            print("退場")
+            logging.info("退場")
 
             self.cnx.commit()
             self.cnx.close()

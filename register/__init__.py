@@ -51,12 +51,10 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
     # save image data to blob
         logging.info("started uploading image")
-        blob.save_image_to_blob(images, forms['container'])
+        
+        image_url = blob.save_image_to_blob(images, forms['container'])
 
         logging.info("uploaded")
-
-    # get image data url
-        image_url = blob.get_image_url(forms['container'])
 
         logging.info(image_url)
 
