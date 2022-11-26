@@ -30,5 +30,6 @@ class Blob():
         container_client = self.service_client.get_container_client(container=container)
 
         for delete_id in delete_ids:
-            container_client.delete_blobfile_names[delete_ids-1]
+            logging.info(delete_id)
+            container_client.delete_blob(file_names[delete_id-1])
             
