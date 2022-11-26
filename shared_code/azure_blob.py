@@ -12,11 +12,12 @@ class Blob():
 
     def save_image_to_blob(self, images, container):
 
-        logging.info(container)
-        blob_client = self.service_client.get_blob_client(container=container, blob=images.filename)
-        logging.info("uploading image...")
-        
-        blob_client.upload_blob(images, overwrite=True)
+        for image in images:
+            blob_client = self.service_client.get_blob_client(container=container, blob=image.filename)
+            logging.info("uploading image...")            
+            blob_client.upload_blob(image, overwrite=True)
+            
+            logging.info(f"Uploaded!! {image.filename}")
 
     def get_image_url(self, container):
         image_url = []

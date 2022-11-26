@@ -3,8 +3,6 @@ import base64
 import json
 import tkinter as tk
 
-
-
 def show_window(name):
     root = tk.Tk()
     # サイズ
@@ -15,3 +13,4 @@ def show_window(name):
     label = tk.Label(root, text=f"ようこそ　{name}さん(*´▽｀*)", font=("",20), bg="#aafaff")  
     label.pack()
     root.mainloop()
+
