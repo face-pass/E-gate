@@ -19,16 +19,13 @@ class Blob():
             
             logging.info(f"Uploaded!! {image.filename}")
 
-    def get_image_url(self, container):
+    def get_image_url(self, images):
         image_url = []
-        container_client = self.service_client.get_container_client(container=container)
-        blob_list = container_client.list_blobs()
 
         # debug
-        logging.info(blob_list)
-        for blob in blob_list:
-                blob_name = blob.name
-                image_url.append(f"https://egate12.blob.core.windows.net/db-image/{blob_name}")
+        logging.info(images)
+        for image in images:
+                image_url.append(f"https://egate12.blob.core.windows.net/db-image/{image}")
 
         return image_url
 
@@ -40,5 +37,6 @@ class Blob():
         container_client = self.service_client.get_container_client(container=container)
 
         for delete_id in delete_ids:
-            container_client.delete_blobfile_names[delete_ids-1]
+            logging.info(delete_id)
+            container_client.delete_blob(file_names[delete_id-1])
             
