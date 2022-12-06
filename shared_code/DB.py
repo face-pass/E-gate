@@ -61,6 +61,16 @@ class MySQL():
         
         return func.HttpResponse("deleted user", status_code = 200)
 
+    def DeleteAllUser(self):
+ 
+        self.cursor.execute(f"TRUNCATE {self.table}")
+        
+        self.cnx.commit()
+        self.cnx.close()
+
+        return func.HttpResponse("deleted all user", status_code = 200)
+        
+
     def upDate(self, person_id):
 
         # 現在の時刻を調べる
