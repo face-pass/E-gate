@@ -56,6 +56,8 @@ class MySQL():
         for x in ids:
             self.cursor.execute(f"DELETE FROM {self.table} WHERE id = {x}")
         
+        self.cursor.execute(f"ALTER TABLE {self.table} auto_increment = 1;")
+        
         self.cnx.commit()
         self.cnx.close()
         
