@@ -7,10 +7,8 @@ from shared_code.hide_config import db_config
 
 class MySQL():
     def __init__(self, table):
-
-        self.table = table
-
         try:
+            self.table = table
             print("---------------------------")
             self.cnx = pymysql.connect(**db_config)
             self.cursor = self.cnx.cursor()
@@ -19,28 +17,29 @@ class MySQL():
         except pymysql.Error as err:
             logging.error(err)
 
+    def getAllData(self):
+        try:
+            self.cursor.execute(f"SELECT * FROM {self.table}")
+            allData = self.cursor.fetchall()
+        except pymysql.Error as err:
+            logging.error(err)
+
+        return allData
+
     def getDBImage(self):
 
         # 画像を取得
         self.images = []
 
-        if not self.table:
-            logging.error(f"table name is empty set!")
-        else:            
-            self.cursor.execute(f"SELECT images FROM {self.table};")
-            self.param_list = self.cursor.fetchall()
+        self.cursor.execute(f"SELECT images FROM {self.table};")
+        self.param_list = self.cursor.fetchall()
 
-            for x in range(len(self.param_list)):
-                self.images.append(self.param_list[x][0])
+        for x in range(len(self.param_list)):
+            self.images.append(self.param_list[x][0])
 
         return self.images
 
     def Register(self, name, image):
-
-        # for x in range(len(self.param_list)):
-        #     self.name.append(self.param_list[x][0])
-
-        print(name)
 
 
         self.cursor.execute(f"INSERT INTO {self.table} (images, name, enter, gateway, flag) VALUES ('{image}', '{name}', 'test', '1', '0')")
@@ -85,17 +84,15 @@ class MySQL():
             self.cursor.execute(f"UPDATE {self.table} SET `enter`='{now}', `flag`=1 WHERE id={person_id}")
             print(name)
 
-            self.cnx.commit()
-            self.cnx.close()
-
             return name
 
         elif flag == 1:
             self.cursor.execute(f"UPDATE {self.table} SET `gateway`='{now}', `flag`=0 WHERE id={person_id}")
             print("退場")
 
-            self.cnx.commit()
-            self.cnx.close()
-
             return name
+        
+        self.cnx.commit()
+        self.cnx.close()
+
 
