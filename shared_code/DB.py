@@ -9,7 +9,6 @@ class MySQL():
     def __init__(self, table):
         try:
             self.table = table
-            print("---------------------------")
             logging.info("---------------------------")
             self.cnx = pymysql.connect(**db_config)
             self.cursor = self.cnx.cursor()
@@ -98,12 +97,17 @@ class MySQL():
         if  flag == 0:
             self.cursor.execute(f"UPDATE {self.table} SET `enter`='{now}', `flag`=1 WHERE id={person_id}")
             logging.info(name)
+            self.cnx.commit()
+            self.cnx.close()
 
             return name
 
         elif flag == 1:
             self.cursor.execute(f"UPDATE {self.table} SET `gateway`='{now}', `flag`=0 WHERE id={person_id}")
             logging.info("退場")
+
+            self.cnx.commit()
+            self.cnx.close()
 
             return name
         
