@@ -7,10 +7,8 @@ from shared_code.hide_config import db_config
 
 class MySQL():
     def __init__(self, table):
-
-        self.table = table
-
         try:
+            self.table = table
             logging.info("---------------------------")
             self.cnx = pymysql.connect(**db_config)
             self.cursor = self.cnx.cursor()
@@ -19,24 +17,29 @@ class MySQL():
         except pymysql.Error as err:
             logging.error(err)
 
+    def getAllData(self):
+        try:
+            self.cursor.execute(f"SELECT * FROM {self.table}")
+            allData = self.cursor.fetchall()
+        except pymysql.Error as err:
+            logging.error(err)
+
+        return allData
+
     def getDBImage(self):
 
         # 画像を取得
         self.images = []
 
-        if not self.table:
-            logging.error(f"table name is empty set!")
-        else:            
-            self.cursor.execute(f"SELECT images FROM {self.table};")
-            self.param_list = self.cursor.fetchall()
+        self.cursor.execute(f"SELECT images FROM {self.table};")
+        self.param_list = self.cursor.fetchall()
 
-            for x in range(len(self.param_list)):
-                self.images.append(self.param_list[x][0])
+        for x in range(len(self.param_list)):
+            self.images.append(self.param_list[x][0])
 
         return self.images
 
     def Register(self, name, image_url):
-
         for x in range(len(name)):
 
             self.cursor.execute(f"INSERT INTO {self.table} (images, name, enter, gateway, flag) VALUES ('{image_url[x]}', '{name[x]}', 'test', '1', '0')")
@@ -94,7 +97,6 @@ class MySQL():
         if  flag == 0:
             self.cursor.execute(f"UPDATE {self.table} SET `enter`='{now}', `flag`=1 WHERE id={person_id}")
             logging.info(name)
-
             self.cnx.commit()
             self.cnx.close()
 
@@ -108,4 +110,8 @@ class MySQL():
             self.cnx.close()
 
             return name
+        
+        self.cnx.commit()
+        self.cnx.close()
+
 
